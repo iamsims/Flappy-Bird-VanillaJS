@@ -40,7 +40,6 @@ cvs.addEventListener("click", function(evt){
         case state.getReady:
             state.current = state.game;
             SWOOSHING.play();
-            console.log("swooshed");
             break;
 
         case state.game:
@@ -131,7 +130,7 @@ const bird ={
             if (this.y + this.h/2 >= cvs.height - fg.h){
                 this.y = cvs.height - fg.h - this.h/2;
                 if(state.current ==state.game){
-                    state.current = state.over;
+                    state.current = state.over; 
                     DIE.play();
                 }
             }
@@ -168,7 +167,7 @@ const fg= {
     h : 112,
     x: 0,
     y: cvs.height - 112,
-    dx:2,
+    dx: 2,
 
     draw : function(){
         ctx.drawImage(sprite, this.sX, this.sY, this.w, this.h, this.x, this.y, this.w, this.h);
@@ -212,16 +211,23 @@ const gameOver={
     medal:{     
         sX : 312,
         sY : 112,
-        w: 225,
-        h : 202,
-        x: cvs.width/2 - 225/2,
-        y: 80,
+        w: 42,
+        h : 42,
+        x: cvs.width/2 - 225/2 + 25,
+        y: 80+85,
+        goldSYoffset: 44
 
     },
 
     draw : function(){
         if(state.current == state.over){
         ctx.drawImage(sprite, this.sX, this.sY, this.w, this.h, this.x, this.y, this.w, this.h);
+        if(score.value<score.best){
+            ctx.drawImage(sprite, this.medal.sX, this.medal.sY, this.medal.w, this.medal.h, this.medal.x, this.medal.y, this.medal.w, this.medal.h);
+        }
+        else{
+            ctx.drawImage(sprite, this.medal.sX, this.medal.sY+this.medal.goldSYoffset, this.medal.w, this.medal.h, this.medal.x, this.medal.y, this.medal.w, this.medal.h);
+        }
         }
     
     }
@@ -241,7 +247,11 @@ const pipes ={
     w: 53,
     h: 400,
     gap: 85,
+    UPPERYLIMIT: -150,
+    LOWERYLIMIT: -370,
     maxYPos: -150,
+    minYPos: -370,
+    lastY: 0,
     dx: 2,
     draw: function(){
         for (let i =0; i< this.position.length;i++){
@@ -260,8 +270,19 @@ const pipes ={
         if(frames%100==0){
             this.position.push({
                 x: cvs.width,
-                y: this.maxYPos*(Math.random()+1)
+                y: Math.random() * (this.maxYPos- this.minYPos) + this.minYPos,
             });
+            let lastY = this.position[this.position.length-1].y;
+            this.maxYPos= lastY + 80;
+            this.minYPos = lastY - 80;
+
+            if (this.maxYPos > this.UPPERYLIMIT){
+                this.maxYPos = this.UPPERYLIMIT;
+            }
+
+            if (this.minYPos < this.LOWERYLIMIT){
+                this.minYPos = this.LOWERYLIMIT;
+            }
         }
 
         for(let i =0; i<this.position.length; i++){
@@ -313,7 +334,6 @@ const score={
             ctx.font = "35px Teko";
             ctx.fillText(this.value, cvs.width/2, 50);
             ctx.strokeText(this.value, cvs.width/2, 50);
-            console.log("initial best: "+ this.best);
         }
 
         else if (state.current == state.over){
@@ -338,10 +358,10 @@ function draw(){
     ctx.fillStyle= "#70c5ce";
     ctx.fillRect(0,0, cvs.width, cvs.height);
     bg.draw();
-    pipes.draw();
-    fg.draw();
     getReady.draw();
     bird.draw();
+    pipes.draw();
+    fg.draw();
     gameOver.draw();
     score.draw();
 
@@ -364,5 +384,3 @@ function loop(){
 window.onload= function(){
     loop();
 }
-
-

@@ -9,7 +9,7 @@ const state ={
 }
 
 const startBtn = {
-    x: 120,
+    x: 265,
     y: 263,
     w: 83,
     h: 29,
@@ -111,10 +111,10 @@ const score={
 
         else if (state.current == state.over){
             ctx.font = "25px Teko";
-            ctx.fillText(this.value, 225, 175);
-            ctx.strokeText(this.value, 225, 175);
-            ctx.fillText(this.best, 225, 215);
-            ctx.strokeText(this.best, 225, 215);
+            ctx.fillText(this.value, 370, 175);
+            ctx.strokeText(this.value, 370, 175);
+            ctx.fillText(this.best, 370, 215);
+            ctx.strokeText(this.best, 370, 215);
 
         } 
 

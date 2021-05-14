@@ -12,7 +12,7 @@ const startBtn = {
     x: 265,
     y: 263,
     w: 83,
-    h: 29,
+    h: 20,
 }
 
 cvs.addEventListener("click", function(evt){
